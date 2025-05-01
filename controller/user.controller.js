@@ -13,7 +13,7 @@ const createUser = async (req, res) => {
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(502).json({ error: "User already exists" });
+      return res.status(500).json({ error: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -50,10 +50,10 @@ const verifyOTP = async (req, res) => {
       await user.save();
       return res.status(200).json({ message: "Email verified successfully" });
     } else {
-      return res.status(400).json({ error: "Invalid OTP" });
+      return res.status(400).json({ error: "Wrong OTP" });
     }
   } catch (error) {
-    console.error("Error in verifyOTP:", error);
+    console.error("Error in OTP verification:", error);
     res.status(500).json({ error: "OTP verification failed" });
   }
 };
@@ -66,10 +66,10 @@ const login = async (req, res) => {
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
+    if (!isMatch) return res.status(500).json({ error: "Invalid credentials" });
 
     if (!user.isVerified) {
-      return res.status(401).json({ error: "Email not verified" });
+      return res.status(500).json({ error: "Email not verified" });
     }
 
     const token = jwt.sign({ id: user.id }, process.env.Jwt_key, { expiresIn: "1d" });
