@@ -10,7 +10,7 @@ const createPost = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId);               
     const category = await Category.findByPk(categoryId);
 
     if (!user || !category) {
@@ -50,10 +50,7 @@ const getPostById = async (req, res) => {
       ],
     });
 
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
-
+    
     res.status(200).json(post);
   } catch (error) {
     console.error("Error fetching post:", error);
@@ -67,9 +64,7 @@ const updatePost = async (req, res) => {
     const updates = req.body;
 
     const post = await Post.findByPk(id);
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    
 
     await post.update(updates);
     res.status(200).json({ message: "Post updated successfully", post });

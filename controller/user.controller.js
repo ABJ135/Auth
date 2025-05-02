@@ -41,7 +41,6 @@ const verifyOTP = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
 
-    if (!user) return res.status(404).json({ error: "User not found" });
     if (user.isVerified) return res.status(400).json({ message: "User already verified" });
 
     if (user.otp === otp) {
